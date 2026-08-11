@@ -3,6 +3,7 @@
 #### ☀️If you're reading this, hope you have a wonderful day.
 
 🌱 Coding noob learning how to build cool things.
+
 🚀 Exploring AI, Communication & Future Technology.
 
 <picture>
@@ -12,6 +13,3 @@
 </picture>
 
 
-![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=HeroYoung24)
-
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=HeroYoung24)
