@@ -1,19 +1,17 @@
 name: generate animation
 
 on:
-  # run automatically every 2 hours
+  # run automatically every 2 hours, away from the busy start of the hour
   schedule:
-    - cron: "0 */2 * * *"
+    - cron: "17 */2 * * *"
 
   # allows to manually run the job at any time
   workflow_dispatch:
 
-  # run on every push on the master branch
+  # run on every push on the main branch
   push:
     branches:
-      - master
-
-
+      - main
 
 jobs:
   generate:
@@ -23,15 +21,25 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      - name: Check private contribution access
+        env:
+          HAS_CONTRIBUTION_TOKEN: ${{ secrets.SNAKE_GITHUB_TOKEN != '' }}
+        run: |
+          if [ "$HAS_CONTRIBUTION_TOKEN" != "true" ]; then
+            echo "::warning::SNAKE_GITHUB_TOKEN is not configured. Private contributions may be missing; see docs/snake.md."
+            echo 'Private contributions require the SNAKE_GITHUB_TOKEN repository secret with read:user permission. See docs/snake.md.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       # generates a snake game from a github user (<github_user_name>) contributions graph, output a svg animation at <svg_out_path>
       - name: generate github-contribution-grid-snake.svg
         uses: Platane/snk/svg-only@v3
         with:
-          github_user_name: HeroYoung24
+          github_user_name: ${{ github.repository_owner }}
+          # A user token with read:user includes private contributions.
+          github_token: ${{ secrets.SNAKE_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           outputs: |
             dist/github-contribution-grid-snake.svg
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark
-
 
       # push the content of <build_dir> to a branch
       # the content will be available at https://raw.githubusercontent.com/<github_user>/<repository>/<target_branch>/<file> , or as github page
